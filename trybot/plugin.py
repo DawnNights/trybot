@@ -38,6 +38,7 @@ PluginPool: List[Plugin] = []
 
 def on_event(*rules: Callable[[Session], Generator], priority: int = 10, block: bool = False):
     '''
+    事件触发器
 
     : param rules: 事件匹配规则集
 
@@ -61,6 +62,22 @@ def on_event(*rules: Callable[[Session], Generator], priority: int = 10, block: 
 
 
 def on_full(keyword: str, *rules: Callable[[Session], Generator], mustGiven: str = '',  **kwargs):
+    '''
+    完全匹配触发器
+
+    : param keyword: 匹配关键词
+
+    : param rules: 事件匹配规则集
+
+    : param mustGiven: 发送mustGiven语句并等待传参
+
+    : param priority: 插件优先级(数值越小级别越高)
+
+    : param block: 当前插件处理成功后是否阻断后续插件执行
+
+    匹配结果保留至session.matched
+    
+    '''
     def full_rule(session: Session):
         if keyword == session.event['message']:
             if mustGiven:
@@ -73,6 +90,22 @@ def on_full(keyword: str, *rules: Callable[[Session], Generator], mustGiven: str
 
 
 def on_fulls(keywords: List[str], *rules: Callable[[Session], Generator], mustGiven: str = '',  **kwargs):
+    '''
+    完全匹配组触发器
+
+    : param keywords: 匹配关键词组
+
+    : param rules: 事件匹配规则集
+
+    : param mustGiven: 发送mustGiven语句并等待传参
+
+    : param priority: 插件优先级(数值越小级别越高)
+
+    : param block: 当前插件处理成功后是否阻断后续插件执行
+
+    匹配结果保留至session.matched
+    
+    '''
     def fulls_rule(session: Session):
         if session.event['message'] in keywords:
             if mustGiven:
@@ -85,6 +118,22 @@ def on_fulls(keywords: List[str], *rules: Callable[[Session], Generator], mustGi
 
 
 def on_command(cmd: str, *rules: Callable[[Session], Generator], mustGiven: str = '',  **kwargs):
+    '''
+    命令匹配触发器
+
+    : param cmd: 匹配命令
+
+    : param rules: 事件匹配规则集
+
+    : param mustGiven: 发送mustGiven语句并等待传参
+
+    : param priority: 插件优先级(数值越小级别越高)
+
+    : param block: 当前插件处理成功后是否阻断后续插件执行
+
+    匹配结果保留至session.matched
+    
+    '''
     def cmd_rule(session: Session):
         if session.event['message'].startswith(cmd):
             session.matched = session.event['message'][len(cmd):].strip()
@@ -97,6 +146,22 @@ def on_command(cmd: str, *rules: Callable[[Session], Generator], mustGiven: str 
 
 
 def on_commands(cmds: List[str], *rules: Callable[[Session], Generator], mustGiven: str = '',  **kwargs):
+    '''
+    命令组匹配触发器
+
+    : param cmds: 匹配命令组
+
+    : param rules: 事件匹配规则集
+
+    : param mustGiven: 发送mustGiven语句并等待传参
+
+    : param priority: 插件优先级(数值越小级别越高)
+
+    : param block: 当前插件处理成功后是否阻断后续插件执行
+
+    匹配结果保留至session.matched
+    
+    '''
     def cmds_rule(session: Session):
         for cmd in cmds:
             if session.event['message'].startswith(cmd):
@@ -109,6 +174,21 @@ def on_commands(cmds: List[str], *rules: Callable[[Session], Generator], mustGiv
     return on_event(*rules, cmds_rule, **kwargs)
 
 def on_regex(pattern:str, *rules: Callable[[Session], Generator],  **kwargs):
+    '''
+    命令组匹配触发器
+
+    : param pattern: 正则语句
+
+    : param rules: 事件匹配规则集
+
+
+    : param priority: 插件优先级(数值越小级别越高)
+
+    : param block: 当前插件处理成功后是否阻断后续插件执行
+
+    匹配结果保留至session.matched
+    
+    '''
     def reg_rule(session: Session):
         session.matched = findall(pattern, session.event['message'])
         yield bool(session.matched)

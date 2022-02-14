@@ -12,7 +12,7 @@ class Session:
 
     def call_action(self, action: str, params: dict) -> dict:
         '''
-        详情请查阅：https://docs.go-cqhttp.org/api/
+        详情请查阅: https://docs.go-cqhttp.org/api/
 
         : param action: 调用Api的名称
 
